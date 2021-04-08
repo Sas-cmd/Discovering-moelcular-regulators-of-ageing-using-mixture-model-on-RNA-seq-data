@@ -1,0 +1,50 @@
+library(Biobase)
+library(SummarizedExperiment)
+library(mclust)
+library(RmixmodCombi)
+library(MixAll)
+library(data.table)
+
+
+BestMM <- function(dat = dat, no_of_mode = x ){
+    
+    #Mclust
+    BICMclust <- NULL
+    dat[is.na(dat)] <- 0
+    try({mclustMixed <- Mclust(dat, G = no_of_mode)
+    BICMclust <- as.numeric((-2*(mclustMixed$loglik) + mclustMixed$df *log(mclustMixed$n)))})
+    
+    
+    #MixAll Gamma
+    BICMixAll <- NULL
+    dat[dat == 0] <- NA
+    try({MixAllMixed <- clusterGamma(dat, 
+                                     nbCluster = no_of_mode, 
+                                     models = clusterGammaNames("all", "equal", "free", "free", "equal"),
+                                     strategy =  clusterStrategy(), 
+                                     criterion = "BIC", nbCore = 0)
+    BICMixAll <- as.numeric(MixAllMixed@criterion)})
+    
+    ##RmixModCombi
+    BICRmix <- NULL
+    dat[is.na(dat)] <- 0
+    try({Rmix <- mixmodCombi(data = dat , nbCluster = no_of_mode, mixmodOutput = NULL,
+                             criterion = c("BIC", "ICL"), models = mixmodGaussianModel())
+    BICRmix <- as.numeric(-2*(Rmix@mixmodOutput@bestResult@likelihood) + Rmix@mixmodOutput@bestResult@parameters@nbFreeParam *log(Rmix@mixmodOutput@nbSample))})
+    
+    BestBIC <- min(c(BICMclust, BICMixAll, BICRmix))
+    
+    if(BestBIC == BICMclust){
+        BestOutput <- mclustMixed$classification
+        BestModel <- mclustMixed$modelName
+    } else if( BestBIC == BICRmix){
+        BestOutput <- Rmix@mixmodOutput@bestResult@partition
+        BestModel <- Rmix@mixmodOutput@bestResult@model
+    } else {
+        BestOutput <- MixAllMixed@zi
+        BestModel <- MixAllMixed@component@modelName
+    }
+    
+    Mainoutput <- list("Classification" = BestOutput, "BIC" = BestBIC, "Model" = BestModel)
+    return(Mainoutput) 
+}
