@@ -1,0 +1,25 @@
+MMRun <- function( dat = dat, no_of_mode = x, Partion_name = Partion_name,
+                   BIC_Name = BIC_Name){
+    AllBIC <- data.table()
+    Allpartion <- NULL
+    for (j in 1:nrow(dat)) {
+        mm <- BestMM(dat = dat[j,], no_of_mode = 1:3)
+        t1 <- as.matrix(mm$Classification)
+        colnames(t1) <- rownames(dat)[j]
+        t2 <- data.table(t(c(rownames(dat)[j], mm$BIC, mm$Model)))
+        Allpartion <- as.matrix(cbind(Allpartion, t1))
+        AllBIC <- rbindlist(list(AllBIC, t2))
+        print(j)
+    }
+
+
+
+    rownames(Allpartion) <- colnames(dat)
+    Allpartion <- as.data.frame(Allpartion)
+
+    write.csv(Allpartion, file = Partion_name)
+    write.csv(AllBIC, file = BIC_Name)
+    
+    finlist <- list(Allpartion, AllBIC)
+return(finlist)
+}
