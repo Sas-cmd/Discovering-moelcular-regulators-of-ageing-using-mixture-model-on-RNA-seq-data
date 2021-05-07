@@ -1,0 +1,94 @@
+library(data.table)
+library(dplyr)
+
+#Converting ages to Factors
+AgeGroupFactors <- function(dat){
+  dat$AGE[dat$AGE == 25] <- 1
+  dat$AGE[dat$AGE == 35] <- 1
+  dat$AGE[dat$AGE == 45] <- 2
+  dat$AGE[dat$AGE == 55] <- 2
+  dat$AGE[dat$AGE == 65] <- 3
+  dat$AGE[dat$AGE == 75] <- 3
+  
+  return(dat)
+}
+
+ForExactTest <- function(data.new){
+  
+  data.new <- AgeGroupFactors(data.new)
+  ft <- as.matrix(with(data.new, table(AGE, Gene)))  
+  pt <- fisher.test(ft, workspace = 2e8)
+  if(ncol(pt) == 1) next
+  pv <- pt$p.value
+  output1 <- data.table(t(c(as.numeric(pt$p.value), 
+                            x[i]$Gene, x[i]$Package, 
+                            as.numeric(x[i]$Best_BIC), 
+                            as.numeric(length(unique(t1$Gene))))))
+  colnames(output1) <- c("p.value", "Gene", "Package", "Best_BIC", "No_of_Modes")
+  return(output1)
+}
+
+obj = readRDS("C:\\gtex_portal_normalized.rds") #downloaded and saved into hard-drive
+edat <- exprs(obj) # Expression values extracted 30303x8527
+pdat <- pData(obj) # Sample level data 8527x69
+
+TissueType <- unique(pdat$our_subtypes)
+name <- levels(as.factor(TissueType))
+
+#Mclust 
+temp <- list.files("E:/Mclust/Mclust3", pattern="*.csv", full.names=TRUE)
+Mclustlist <- lapply(temp, fread, header = TRUE)
+
+#MixAll 
+temp <- list.files("E:/MixAll", pattern="*.csv", full.names=TRUE)
+MixAlllist <- lapply(temp, fread, header = TRUE)
+
+#RmixCombi
+temp <- list.files("E:/RmixCombi", pattern="*.csv", full.names=TRUE)
+RmixCombilist <- lapply(temp, fread, header = TRUE)
+
+#Best model list
+BestModel <- fread("E:/Best_Model_selected_NON_Wrapper.csv")
+
+
+for (z in 1:38){
+  Mclust <- Mclustlist[z][[1]]
+  MixAll <- MixAlllist[z][[1]]
+  RmixCombi <- RmixCombilist[z][[1]]
+  
+  x <- BestModel %>% filter(Tissue == name[z])
+  
+  Finaloutput <- data.table()
+  for(i in 1:nrow(x)){
+  if(x[i]$Package == "Mclust"){
+    t1 <- Mclust %>% select(c("V1", "AGE", as.character(x[i]$Gene)))
+  } else if(x[i]$Package == "MixAll"){
+    t1 <- MixAll %>% select(c("V1", "AGE", as.character(x[i]$Gene)))
+  } else if(x[i]$Package == "RmixCombi") {
+    t1 <- RmixCombi %>% select(c("V1", "AGE", as.character(x[i]$Gene)))
+  } else {
+    next
+  }
+    
+  colnames(t1) <- c("Patients", "AGE", "Gene")
+  
+  if(length(unique(t1$Gene)) == 1) next
+  
+  t1 <- AgeGroupFactors(t1)
+  ft <- as.matrix(with(t1, table(AGE, Gene))) 
+  pt <- fisher.test(ft, workspace = 2e8)
+  pv <- pt$p.value
+  output1 <- data.table(t(c(as.numeric(pt$p.value), 
+                            x[i]$Gene, x[i]$Package, 
+                            as.numeric(x[i]$Best_BIC), 
+                            as.numeric(length(unique(t1$Gene))))))
+  colnames(output1) <- c("p.value", "Gene", "Package", "Best_BIC", "No_of_Modes")
+  
+  Finaloutput <- rbindlist(list(Finaloutput, output1))
+  print(i)
+  }
+
+  write.csv(Finaloutput, file = sprintf("BestModel3_Exact_test_%s.csv", name[z])) 
+            
+
+}
