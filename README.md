@@ -1,6 +1,7 @@
 
 **The application of mixture models to RNA-seq data to discover ageing regulators** 
 
+
 Abstract 
 
 Ageing is a complex process. The combined effects of environmental and genetic factors make it challenging to isolate specific regulators. Given the dynamic nature of gene expression, a gene expression can follow different distributions during the aging process. We can capture the biological variability using mixture models. This is done by modelling the variability via multimodality using multiple different distributions at the gene level for RNA-sequencing (RNA-seq) data. 
