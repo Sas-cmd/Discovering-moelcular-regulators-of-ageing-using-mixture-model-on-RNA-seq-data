@@ -27,4 +27,4 @@ About Data
 
 Due to the resources required to run mixture models on the GTEx datasets we have provided the clustering outputs from the best mixture models as well as data fom the clustering outputs from all mixture model packages we have run on Github. If data is required and not present please do not hesistate to contact me.
 
-We have also provided the code to download and normalise the GTEx we used from the [YARN R package](https://github.com/QuackenbushLab/yarn).
+We have also provided the code to download and normalise the GTEx data we used from the [YARN R package](https://github.com/QuackenbushLab/yarn).
