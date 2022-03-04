@@ -20,3 +20,11 @@ The results indicate that modelling gene expression variability using mixture mo
 
 
 ![Figure_1_Flowchart](https://user-images.githubusercontent.com/52276989/156529152-e217b5eb-2c84-4380-8b89-2b08c51eaaf4.svg)
+
+About Data
+-----------
+
+##Data
+Due to the resources required to run mixture models on the GTEx datasets we have provided the clustering outputs from the best mixture models as well as data fom the clustering outputs from all mixture model packages we have run on Github. If data is required and not present please do not hesistate to contact me.
+
+##We have also provided the code to download and normalise the GTEx we used from the [YARN R package](https://github.com/QuackenbushLab/yarn) as well as the file we normalised file we used for the analysis under the Data folder
