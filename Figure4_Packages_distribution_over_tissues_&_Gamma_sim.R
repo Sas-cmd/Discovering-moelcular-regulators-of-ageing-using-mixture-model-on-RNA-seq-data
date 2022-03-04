@@ -24,7 +24,7 @@ set.seed(2353535)
 
 ## load up our functions into memory
 #Selecting the best MM
-BestMM <- function(dat = dat, no_of_mode = modes ){
+BestMM = function(dat = dat, no_of_mode = modes ){
     #Mclust
     BICMclust <- NULL
     dat[is.na(dat)] <- 0
@@ -153,7 +153,7 @@ write.csv(fint, file = "Gamma_parameters for GTEx.csv")
 #fint <- read_csv("~/Gamma_parameters for GTEx.csv")
 
 #Simulating for shape parameter 
-forshape <- NULL
+forshape = NULL
 for(i in 1:4){
     t1 <- fint %>% 
         filter(quartile == i) %>% sample_n(125)
