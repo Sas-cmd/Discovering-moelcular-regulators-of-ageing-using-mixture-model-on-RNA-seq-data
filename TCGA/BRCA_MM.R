@@ -7,10 +7,10 @@ library(data.table)
 library(dplyr)
 library(ggplot2)
 
-setwd("D:/Ageing Mixture models project/1. New mixture model with wrapper/1. Testing against a ref/TCGA_BRCA/TCGA_BRCA")
+setwd("~/TCGA_BRCA")
 
 ####Load data and extract count data####
-load("D:/Ageing Mixture models project/1. New mixture model with wrapper/1. Testing against a ref/TCGA_BRCA/TCGA_BRCA/TCGA_BRCA.rda")
+load("~/TCGA_BRCA.rda")
 
 #saveRDS(data, file = "BRCA.rds")
 BRCA.counts <- assays(data)$normalized_count
@@ -122,7 +122,7 @@ saveRDS(OutputList, file = "BRCA_BRCA_Basal_Her2_LumB.rds")
 ####Exact test####
 #load data for BIC and partion
 
-load("D:/Ageing Mixture models project/1. New mixture model with wrapper/1. Testing against a ref/TCGA_BRCA/TCGA_BRCA/TCGA_BRCA.rda")
+load("~/TCGA_BRCA.rda")
 
 BICall <- read.csv("BIC_BRCA_Basal_Her2_LumB.csv")
 
@@ -192,7 +192,7 @@ library(RcmdrMisc)
 library(viridis)
 library(hrbrthemes)
 
-load("C:/Users/s4504544/Desktop/pam50.rda")
+load("~/pam50.rda") #https://genome.unc.edu/pubsup/breastGEO/PAM50.zip
 P50 <- as.data.frame(rownames(pam50$centroids))   
 
 xpadjfin1 <- BRCA_etestFIN %>% dplyr::filter(p_adj <= 0.05)
