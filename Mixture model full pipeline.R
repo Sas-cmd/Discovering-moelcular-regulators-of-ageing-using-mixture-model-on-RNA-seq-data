@@ -133,7 +133,7 @@ TissueType <- unique(pdat$our_subtypes)
 name <- levels(as.factor(TissueType))
 
 New.list <- list()
-for(i in c(22, 23, 29, 34, 35)){
+for(i in 1:length(TissueType){
     Tissue = pdat[which(pdat$our_subtypes == TissueType[i] ), ] #extracting all the tissuetypes
     pos <- which(colnames(edat) %in% rownames(Tissue)) 
     edat.Tiss <- edat[,pos]
